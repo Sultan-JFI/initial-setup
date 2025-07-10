@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card shadow-sm">
+            {% if article.image %}
+                <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h1 class="card-title">{{ article.title }}</h1>
+                <p class="card-text text-muted small">
+                    <span>دسته‌بندی: <a href="{% url 'news:category_articles' article.category.slug %}" class="text-info">{{ article.category.name }}</a></span> |
+                    <span>نویسنده: {{ article.author.username }}</span> |
+                    <span>تاریخ انتشار: {{ article.publish_date|date:"Y/m/d H:i" }}</span>
+                    {% if article.updated_date != article.publish_date %}
+                        | <span>آخرین بروزرسانی: {{ article.updated_date|date:"Y/m/d H:i" }}</span>
+                    {% endif %}
+                </p>
+                <hr>
+                <div class="card-text text-justify">
+                    {{ article.content|linebreaksbr }} {# Renders newlines as <br> tags #}
+                </div>
+                <a href="{% url 'news:list' %}" class="btn btn-secondary mt-4">بازگشت به صفحه اصلی</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

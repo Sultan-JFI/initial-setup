@@ -1,0 +1,63 @@
+{% extends 'base.html' %} {# Extends the base template #}
+
+{% block title %}آخرین اخبار{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">آخرین اخبار</h1>
+<div class="row">
+    <div class="col-md-9">
+        {% if articles %}
+            {% for article in articles %}
+            <div class="card mb-4 shadow-sm">
+                {% if article.image %}
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'news:detail' article.slug %}" class="text-decoration-none text-dark">{{ article.title }}</a></h5>
+                    <p class="card-text text-muted small">
+                        <span>دسته‌بندی: <a href="{% url 'news:category_articles' article.category.slug %}" class="text-info">{{ article.category.name }}</a></span> |
+                        <span>نویسنده: {{ article.author.username }}</span> |
+                        <span>تاریخ انتشار: {{ article.publish_date|date:"Y/m/d" }}</span>
+                    </p>
+                    <p class="card-text">{{ article.content|truncatechars:200 }}</p>
+                    <a href="{% url 'news:detail' article.slug %}" class="btn btn-primary">ادامه مطلب</a>
+                </div>
+            </div>
+            {% endfor %}
+
+            {# Pagination #}
+            {% if is_paginated %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
+                    {% endif %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }} از {{ page_obj.paginator.num_pages }}</a></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+        {% else %}
+            <p>خبری برای نمایش وجود ندارد.</p>
+        {% endif %}
+    </div>
+    <div class="col-md-3">
+        {# Sidebar for categories or other widgets #}
+        <div class="card shadow-sm">
+            <div class="card-header">
+                دسته‌بندی‌ها
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for category in categories %}
+                    <li class="list-group-item">
+                        <a href="{% url 'news:category_articles' category.slug %}" class="text-dark">{{ category.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

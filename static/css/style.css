@@ -1,0 +1,21 @@
+body {
+    font-family: 'Tahoma', sans-serif; /* Example font */
+    direction: rtl; /* For RTL languages like Persian */
+    text-align: right; /* Adjust text alignment for RTL */
+}
+
+/* Adjust Bootstrap classes for RTL */
+.me-auto {
+    margin-left: auto !important;
+    margin-right: unset !important;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+/* Custom styles for cards, images, etc. */
+.card-img-top {
+    max-height: 250px; /* Limit height of news images */
+    object-fit: cover; /* Crop images to fit */
+}
