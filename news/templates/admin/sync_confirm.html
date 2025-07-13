@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div id="content-main">
+    <p>آیا مطمئن هستید که می‌خواهید تمام داده‌های سایت را با مخزن گیت‌هاب همگام‌سازی کنید؟</p>
+    <p>این کار ممکن است چند لحظه طول بکشد.</p>
+    <form action="" method="post">{% csrf_token %}
+        <input type="hidden" name="action" value="sync_github_data" />
+        <button type="submit" class="button">همگام‌سازی با گیت‌هاب</button>
+        <a href="{% url 'admin:index' %}" class="button cancel-link">لغو</a>
+    </form>
+</div>
+{% endblock %}
