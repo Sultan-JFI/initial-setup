@@ -4,19 +4,17 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.management import call_command
 from django.contrib.admin import AdminSite
+from django.contrib.auth.models import User, Group # این خط را اضافه کنید
 from .models import Category, NewsArticle
 
-# تعریف یک AdminSite سفارشی برای اضافه کردن URLهای جدید
 class CustomAdminSite(AdminSite):
     def get_urls(self):
         urls = super().get_urls()
-        # تعریف URL برای صفحه همگام‌سازی
         custom_urls = [
             path('sync-github/', self.admin_view(self.sync_data), name='sync-github'),
         ]
         return custom_urls + urls
 
-    # تابع برای اجرای دستور sync_to_github
     def sync_data(self, request):
         if request.method == 'POST':
             try:
@@ -29,23 +27,16 @@ class CustomAdminSite(AdminSite):
             
             return redirect('admin:index')
         
-        # رندر کردن صفحه تایید قبل از اجرا
         return render(request, 'admin/sync_confirm.html', context={'site_header': self.site_header, 'site_title': self.site_title})
 
-
-# حالا admin.site پیش‌فرض را با CustomAdminSite جایگزین می‌کنیم
-# اگر این خط از قبل در settings.py شما برای admin.site وجود ندارد، نیازی نیست اینجا تغییر دهید.
-# اما اگر از admin.site در جای دیگری استفاده کرده‌اید، مطمئن شوید که به admin_site اشاره کنید.
 admin_site = CustomAdminSite(name='custom_admin')
 
-
-@admin.register(Category, site=admin_site) # تغییر: site=admin_site اضافه شد
+@admin.register(Category, site=admin_site)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     prepopulated_fields = {'slug': ('name',)}
 
-
-@admin.register(NewsArticle, site=admin_site) # تغییر: site=admin_site اضافه شد
+@admin.register(NewsArticle, site=admin_site)
 class NewsArticleAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'author', 'publish_date', 'is_published')
     list_filter = ('is_published', 'category', 'author')
@@ -64,3 +55,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
         queryset.update(is_published=False)
         self.message_user(request, "اخبار انتخاب شده از حالت انتشار خارج شدند.")
     make_unpublished.short_description = "لغو انتشار اخبار انتخاب شده"
+
+# ثبت مدل‌های User و Group با admin_site سفارشی
+admin_site.register(User)
+admin_site.register(Group)
