@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.NOTICE(f'Cloning repository into {repo_local_path}...'))
         try:
-            repo = git.Repo.clone_from(authenticated_repo_url, repo_local_path)
+            repo = git.Repo.clone_from(authenticated_repo_url, repo_local_path, branch='main')
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'Failed to clone repository: {e}'))
             return
